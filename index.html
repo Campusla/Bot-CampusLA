@@ -2,71 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel CampusLA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .btn-primary { background-color: #3b82f6; border: none; font-weight: bold; padding: 15px; width: 100%; transition: 0.3s; margin-top: 20px; }
-        .btn-success { background-color: #22c55e !important; }
-        .status-box { background-color: #0f172a; border-radius: 10px; padding: 15px; margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #94a3b8; border-left: 4px solid #3b82f6; text-align: left; }
+        body { background-color: #0f172a; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .card { background-color: #1e293b; border-radius: 20px; padding: 40px; width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        .btn-trigger { background-color: #3b82f6; border: none; color: white; font-weight: bold; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; }
+        .status { background-color: #0f172a; padding: 15px; margin-top: 20px; border-radius: 10px; font-size: 0.8rem; text-align: left; border-left: 4px solid #3b82f6; }
     </style>
 </head>
 <body>
-
-<div class="card">
-    <img src="https://campuslatinoamerica.edu.co/wp-content/uploads/2024/07/logo-campus-la.png" alt="CampusLA" style="max-width: 150px; margin-bottom: 20px;">
-    <h4>Centro de Automatización</h4>
-    <p style="color: #64748b; font-size: 0.9rem;">Estructura de Clase Mundial</p>
-    
-    <button id="triggerBtn" onclick="triggerWorkflow()" class="btn btn-primary">EJECUTAR EN GIBUHUB</button>
-    <div class="status-box" id="statusBox">> Listo para la orden, Marty...</div>
-</div>
-
-<script>
-    const CONFIG = {
-        TOKEN: "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"
-        OWNER: "Campusla",
-        REPO: "Bot-CampusLA",
-        WORKFLOW: "main.yml"
-    };
-
-    async function triggerWorkflow() {
-        const btn = document.getElementById('triggerBtn');
-        const status = document.getElementById('statusBox');
-        
-        btn.disabled = true;
-        btn.innerText = 'PROCESANDO...';
-        status.innerText = '> Contactando a Gibuhub...';
-
-        const url = `https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/actions/workflows/${CONFIG.WORKFLOW}/dispatches`;
-
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${CONFIG.TOKEN}`,
-                    "Accept": "application/vnd.github.v3+json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ref: "main" })
-            });
-
-            if (response.ok) {
-                btn.className = 'btn btn-success';
-                btn.innerText = 'ORDEN RECIBIDA ✅';
-                status.innerText = '> ¡ÉXITO! El bot de CampusLA está trabajando.';
-            } else {
-                const err = await response.json();
-                throw new Error(err.message || 'Error de acceso');
-            }
-        } catch (error) {
-            btn.disabled = false;
-            btn.innerText = 'ERROR';
-            status.innerText = '> Fallo: ' + error.message;
+    <div class="card">
+        <img src="https://campuslatinoamerica.edu.co/wp-content/uploads/2024/07/logo-campus-la.png" width="150" style="margin-bottom:20px;">
+        <button class="btn-trigger" id="btn" onclick="run()">EJECUTAR EN GIBUHUB</button>
+        <div class="status" id="out">> Esperando orden...</div>
+    </div>
+    <script>
+        async function run() {
+            const b = document.getElementById('btn');
+            const o = document.getElementById('out');
+            b.disabled = true; b.innerText = 'ENVIANDO...';
+            try {
+                const r = await fetch('https://api.github.com/repos/Campusla/Bot-CampusLA/actions/workflows/main.yml/dispatches', {
+                    method: 'POST',
+                    headers: { 'Authorization': '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', 'Accept': 'application/vnd.github.v3+json' },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+                if (r.ok) { b.style.backgroundColor = '#22c55e'; b.innerText = 'EXITO ✅'; o.innerText = '> Bot activado.'; }
+                else { const e = await r.json(); o.innerText = '> Error: ' + e.message; b.disabled = false; b.innerText = 'REINTENTAR'; }
+            } catch (e) { o.innerText = '> Fallo de red.'; b.disabled = false; }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
