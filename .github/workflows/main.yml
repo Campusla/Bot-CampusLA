@@ -1,1 +1,17 @@
+name: Bot de Publicacion CampusLA
 
+on:
+  workflow_dispatch: # Esto es lo que activa el botón de tu web
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Ejecutar Robot
+        run: |
+          echo "Despertando el bot de Clase Mundial de CampusLA..."
+          # Aquí es donde iría el comando para publicar en Instagram
+          echo "¡Proceso iniciado exitosamente!"
