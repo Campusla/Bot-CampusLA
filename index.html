@@ -3,72 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusLA - Control Mundial</title>
+    <title>CampusLA - Control de Mando</title>
     <style>
-        body { background: #0a0a0a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #151515; padding: 40px; border-radius: 20px; border: 1px solid #333; text-align: center; width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
-        .logo { width: 120px; margin-bottom: 20px; border-radius: 10px; }
-        h1 { color: #00d2ff; font-size: 1.8rem; margin: 0; }
-        .panel { background: #000; padding: 20px; border-radius: 15px; margin: 25px 0; border: 1px solid #222; }
-        .led { width: 12px; height: 12px; background: #444; border-radius: 50%; margin: 0 auto 10px; transition: 0.3s; }
-        .led-active { background: #00ffcc; box-shadow: 0 0 15px #00ffcc; }
-        button { background: linear-gradient(135deg, #007bff, #00d2ff); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
-        button:disabled { background: #333; cursor: not-allowed; }
-        .footer { font-size: 0.7rem; color: #444; margin-top: 20px; }
+        /* ESTILO PREMIUM SENIOR */
+        body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #151515; padding: 40px; border-radius: 25px; border: 1px solid #333; text-align: center; width: 350px; box-shadow: 0 25px 60px rgba(0,0,0,0.9); }
+        .logo { width: 130px; margin-bottom: 15px; border-radius: 12px; }
+        h1 { color: #00d2ff; font-size: 2rem; margin: 0; letter-spacing: -1px; }
+        .subtitle { color: #888; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .panel { background: #000; padding: 25px; border-radius: 15px; margin: 25px 0; border: 1px solid #222; }
+        .led { width: 14px; height: 14px; background: #444; border-radius: 50%; margin: 0 auto 12px; transition: 0.4s; }
+        .led-active { background: #00ffcc; box-shadow: 0 0 20px #00ffcc; }
+        .led-error { background: #ff4444; box-shadow: 0 0 20px #ff4444; }
+        #msg { font-size: 0.8rem; color: #aaa; margin: 0; font-weight: bold; }
+        button { background: linear-gradient(135deg, #007bff, #00d2ff); color: #fff; border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; font-size: 1rem; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,123,255,0.4); }
+        button:disabled { background: #333; cursor: not-allowed; transform: none; box-shadow: none; }
+        .footer { font-size: 0.7rem; color: #333; margin-top: 30px; border-top: 1px solid #222; padding-top: 15px; }
     </style>
 </head>
 <body>
+
     <div class="card">
         <img src="logocampus.jpg" alt="CampusLA" class="logo">
         <h1>CampusLA</h1>
-        <p style="color: #888;">De Clase Mundial</p>
+        <div class="subtitle">De Clase Mundial</div>
+
         <div class="panel">
             <div id="led" class="led"></div>
-            <p id="msg" style="font-size: 0.8rem; color: #aaa;">SISTEMA LISTO</p>
+            <p id="msg">SISTEMA LISTO</p>
         </div>
+
         <button id="btn">EJECUTAR EN GIBUHUB</button>
-        <div class="footer">Admin: Marty | 2026</div>
+
+        <div class="footer">
+            PANEL DE CONTROL FISCAL & SCRUM<br>
+            Admin: Marty | 2026
+        </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE SENIOR
-        const TOKEN = "ghp_ajViegPn4qt30CLybGnA1wkQ1v1uIS2aZs79"; 
-        const OWNER = "Campusla";
-        const REPO = "Bot-CampusLA";
+        // CONFIGURACIÓN CENTRALIZADA
+        const CONFIG = {
+            TOKEN: "ghp_ajViegPn4qt30CLybGnA1wkQ1v1uIS2aZs79",
+            OWNER: "Campusla",
+            REPO: "Bot-CampusLA",
+            WORKFLOW: "main.yml"
+        };
 
         document.getElementById('btn').addEventListener('click', async function() {
             const btn = this;
             const led = document.getElementById('led');
             const msg = document.getElementById('msg');
 
+            // Estado: Iniciando
             btn.disabled = true;
-            led.classList.add('led-active');
-            msg.innerText = "DESPERTANDO ROBOT...";
+            led.className = "led led-active";
+            msg.innerText = "DESPERTANDO EL ROBOT...";
 
             try {
-                const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/main.yml/dispatches`, {
+                const url = `https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/actions/workflows/${CONFIG.WORKFLOW}/dispatches`;
+                
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Accept': 'application/vnd.github+json' },
+                    headers: {
+                        'Authorization': `Bearer ${CONFIG.TOKEN}`,
+                        'Accept': 'application/vnd.github+json',
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    },
                     body: JSON.stringify({ ref: 'main' })
                 });
 
-                if (res.ok) {
-                    msg.innerText = "¡ORDEN ENVIADA CON ÉXITO!";
-                    alert("¡Misión cumplida, gordo! El bot ya está camellando en la nube.");
+                if (response.status === 204) {
+                    // ÉXITO TOTAL
+                    msg.innerText = "¡ORDEN RECIBIDA EN LA NUBE!";
+                    alert("¡Excelente, gordo! El bot de CampusLA ha comenzado su tarea.");
                 } else {
+                    // ERROR DE RESPUESTA
+                    const data = await response.json();
+                    console.error("Detalle:", data);
                     throw new Error();
                 }
-            } catch (e) {
-                msg.innerText = "ERROR DE CONEXIÓN";
-                led.style.background = "red";
+
+            } catch (error) {
+                // ESTADO: ERROR
+                led.className = "led led-error";
+                msg.innerText = "ERROR: REVISA EL TOKEN O RUTA";
+                alert("Hubo un problema. Verifica que el archivo .github/workflows/main.yml exista.");
             } finally {
+                // Reset del botón después de 5 segundos
                 setTimeout(() => {
                     btn.disabled = false;
-                    led.classList.remove('led-active');
+                    led.className = "led";
                     msg.innerText = "SISTEMA LISTO";
                 }, 5000);
             }
         });
     </script>
+
 </body>
 </html>
