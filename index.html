@@ -3,49 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control | CampusLA</title>
+    <title>Panel CampusLA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .btn-primary { background-color: #3b82f6; border: none; font-weight: bold; padding: 15px; transition: 0.3s; }
-        .btn-primary:hover { background-color: #2563eb; transform: translateY(-2px); }
-        .btn-executing { background-color: #06b6d4 !important; border: none; }
-        .status-box { background-color: #0f172a; border-radius: 12px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #94a3b8; border-left: 4px solid #3b82f6; min-height: 80px; }
-        .logo-campus { max-width: 180px; margin-bottom: 25px; }
+        body { background-color: #0f172a; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn-primary { background-color: #3b82f6; border: none; font-weight: bold; padding: 15px; width: 100%; transition: 0.3s; margin-top: 20px; }
+        .btn-success { background-color: #22c55e !important; }
+        .status-box { background-color: #0f172a; border-radius: 10px; padding: 15px; margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #94a3b8; border-left: 4px solid #3b82f6; text-align: left; }
     </style>
 </head>
 <body>
 
-<div class="container d-flex align-items-center justify-content-center vh-100">
-    <div class="card p-5" style="width: 100%; max-width: 480px;">
-        <div class="text-center">
-            <img src="https://campuslatinoamerica.edu.co/wp-content/uploads/2024/07/logo-campus-la.png" alt="CampusLA" class="logo-campus">
-        </div>
-        
-        <h4 class="text-center mb-1">Centro de Automatización</h4>
-        <p class="text-center text-secondary small mb-4">Estructura de Clase Mundial</p>
-        
-        <div class="d-grid gap-3">
-            <button id="triggerBtn" onclick="triggerWorkflow()" class="btn btn-primary w-100">
-                EJECUTAR EN GIBUHUB
-            </button>
-        </div>
-
-        <div class="status-box mt-4" id="statusBox">
-            > Sistema listo, Científico Marty...
-        </div>
-        
-        <div class="text-center mt-4">
-            <small class="text-muted">Desarrollado para CampusLA</small>
-        </div>
-    </div>
+<div class="card">
+    <img src="https://campuslatinoamerica.edu.co/wp-content/uploads/2024/07/logo-campus-la.png" alt="CampusLA" style="max-width: 150px; margin-bottom: 20px;">
+    <h4>Centro de Automatización</h4>
+    <p style="color: #64748b; font-size: 0.9rem;">Estructura de Clase Mundial</p>
+    
+    <button id="triggerBtn" onclick="triggerWorkflow()" class="btn btn-primary">EJECUTAR EN GIBUHUB</button>
+    <div class="status-box" id="statusBox">> Listo para la orden, Marty...</div>
 </div>
 
 <script>
-    // CONFIGURACIÓN TÉCNICA
     const CONFIG = {
-        TOKEN: "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"
+        TOKEN: "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", // <--- PEGA TU TOKEN AQUÍ
         OWNER: "Campusla",
         REPO: "Bot-CampusLA",
         WORKFLOW: "main.yml"
@@ -56,11 +37,9 @@
         const status = document.getElementById('statusBox');
         
         btn.disabled = true;
-        btn.className = 'btn btn-executing w-100';
-        btn.innerText = 'DESPERTANDO EL ROBOT...';
-        status.innerHTML = '> <span style="color: #3b82f6">SOLICITANDO:</span> Acceso a la API de Gibuhub...';
+        btn.innerText = 'PROCESANDO...';
+        status.innerText = '> Contactando a Gibuhub...';
 
-        // URL directa al archivo del robot
         const url = `https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/actions/workflows/${CONFIG.WORKFLOW}/dispatches`;
 
         try {
@@ -75,26 +54,19 @@
             });
 
             if (response.ok) {
-                // ÉXITO
-                btn.className = 'btn btn-success w-100';
-                btn.style.backgroundColor = '#22c55e';
+                btn.className = 'btn btn-success';
                 btn.innerText = 'ORDEN RECIBIDA ✅';
-                status.innerHTML = '> <span style="color: #22c55e">ESTADO:</span> Orden enviada. El bot está trabajando en GitHub Actions.';
+                status.innerText = '> ¡ÉXITO! El bot de CampusLA está trabajando.';
             } else {
-                // ERROR DE GIBUHUB
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error en la autenticación');
+                const err = await response.json();
+                throw new Error(err.message || 'Error de acceso');
             }
         } catch (error) {
-            // ERROR GENERAL
             btn.disabled = false;
-            btn.className = 'btn btn-danger w-100';
-            btn.style.backgroundColor = '#ef4444';
-            btn.innerText = 'HUBO UN PROBLEMA';
-            status.innerHTML = '> <span style="color: #ef4444">ERROR:</span> ' + error.message + '<br>> Revisa si el token es nuevo y tiene permiso "workflow".';
+            btn.innerText = 'ERROR';
+            status.innerText = '> Fallo: ' + error.message;
         }
     }
 </script>
-
 </body>
 </html>
