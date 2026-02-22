@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusLA - Cloud Bot</title>
+    <style>
+        /* CSS COMPILADO */
+        body {
+            background: #0f0f0f;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-card {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            text-align: center;
+            width: 320px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .logo { width: 140px; margin-bottom: 15px; }
+        .display-panel {
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 1px inset #444;
+        }
+        .led {
+            width: 12px;
+            height: 12px;
+            background: #555;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            transition: 0.3s;
+        }
+        .led-active { background: #00ffcc; box-shadow: 0 0 15px #00ffcc; }
+        button {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .footer { font-size: 0.8rem; color: #666; margin-top: 20px; }
+    </style>
+</head>
+<body>
 
+    <div class="main-card">
+        <div class="brand">
+            <img src="https://www.campuslatinoamerica.edu.co/logo.png" alt="CampusLA Logo" class="logo">
+            <h1>Auto-Publisher</h1>
+            <p>Cloud Edition</p>
+        </div>
+
+        <div class="display-panel">
+            <div id="status-light" class="led"></div>
+            <p id="status-msg">Sistema en espera</p>
+        </div>
+
+        <div class="control-room">
+            <button id="trigger-btn">EJECUTAR EN GIBUHUB</button>
+        </div>
+
+        <div class="footer">
+            <p>Admin: Marty | CampusLA 2026</p>
+        </div>
+    </div>
+
+    <script>
+        /* JS COMPILADO */
+        document.getElementById('trigger-btn').addEventListener('click', function() {
+            const statusMsg = document.getElementById('status-msg');
+            const led = document.getElementById('status-light');
+            const btn = this;
+
+            btn.disabled = true;
+            btn.innerText = "PROCESANDO...";
+            statusMsg.innerText = "Disparando GitHub Action...";
+            led.classList.add('led-active');
+
+            // Simulación de conexión con la API de GIBUHUB
+            setTimeout(() => {
+                statusMsg.innerText = "¡Orden enviada a la Nube!";
+                alert("Automatización de CampusLA iniciada. Revisa tus Actions.");
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerText = "EJECUTAR EN GIBUHUB";
+                    statusMsg.innerText = "Sistema en espera";
+                    led.classList.remove('led-active');
+                }, 3000);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
