@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusLA - Cloud Bot</title>
     <style>
-        /* CSS COMPILADO */
+        /* CSS COMPILADO - DISEÑO OSCURO PREMIUM */
         body {
             background: #0f0f0f;
             color: #ffffff;
@@ -25,7 +25,11 @@
             width: 320px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
-        .logo { width: 140px; margin-bottom: 15px; }
+        .logo { 
+            width: 140px; 
+            margin-bottom: 15px;
+            border-radius: 10px;
+        }
         .display-panel {
             background: #000;
             padding: 15px;
@@ -62,7 +66,7 @@
 
     <div class="main-card">
         <div class="brand">
-            <img src="https://www.campuslatinoamerica.edu.co/logo.png" alt="CampusLA Logo" class="logo">
+            <img src="logocampus.jpg" alt="CampusLA Logo" class="logo">
             <h1>Auto-Publisher</h1>
             <p>Cloud Edition</p>
         </div>
@@ -71,12 +75,7 @@
             <div id="status-light" class="led"></div>
             <p id="status-msg">Sistema en espera</p>
         </div>
-<div class="brand">
-    <img src="logo.jpg" alt="CampusLA Logo" class="logo"> 
-    
-    <h1>Auto-Publisher</h1>
-    <p>Cloud Edition</p>
-</div>
+
         <div class="control-room">
             <button id="trigger-btn">EJECUTAR EN GIBUHUB</button>
         </div>
@@ -87,7 +86,7 @@
     </div>
 
     <script>
-        /* JS COMPILADO */
+        /* JS COMPILADO - LÓGICA DE DISPARO */
         document.getElementById('trigger-btn').addEventListener('click', function() {
             const statusMsg = document.getElementById('status-msg');
             const led = document.getElementById('status-light');
@@ -95,13 +94,13 @@
 
             btn.disabled = true;
             btn.innerText = "PROCESANDO...";
-            statusMsg.innerText = "Disparando GitHub Action...";
+            statusMsg.innerText = "Llamando a la Nube...";
             led.classList.add('led-active');
 
-            // Simulación de conexión con la API de GIBUHUB
+            // Simulación de conexión real
             setTimeout(() => {
-                statusMsg.innerText = "¡Orden enviada a la Nube!";
-                alert("Automatización de CampusLA iniciada. Revisa tus Actions.");
+                statusMsg.innerText = "¡Orden enviada a GIBUHUB!";
+                alert("Automatización iniciada. El robot de CampusLA está despertando.");
                 
                 setTimeout(() => {
                     btn.disabled = false;
