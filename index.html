@@ -3,112 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusLA - Cloud Bot</title>
+    <title>CampusLA - Control Mundial</title>
     <style>
-        /* CSS COMPILADO - DISEÑO OSCURO PREMIUM */
-        body {
-            background: #0f0f0f;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .main-card {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid #333;
-            text-align: center;
-            width: 320px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-        .logo { 
-            width: 140px; 
-            margin-bottom: 15px;
-            border-radius: 10px;
-        }
-        .display-panel {
-            background: #000;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 25px 0;
-            border: 1px inset #444;
-        }
-        .led {
-            width: 12px;
-            height: 12px;
-            background: #555;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            transition: 0.3s;
-        }
+        body { background: #0a0a0a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #151515; padding: 40px; border-radius: 20px; border: 1px solid #333; text-align: center; width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        .logo { width: 120px; margin-bottom: 20px; border-radius: 10px; }
+        h1 { color: #00d2ff; font-size: 1.8rem; margin: 0; }
+        .panel { background: #000; padding: 20px; border-radius: 15px; margin: 25px 0; border: 1px solid #222; }
+        .led { width: 12px; height: 12px; background: #444; border-radius: 50%; margin: 0 auto 10px; transition: 0.3s; }
         .led-active { background: #00ffcc; box-shadow: 0 0 15px #00ffcc; }
-        button {
-            background: linear-gradient(45deg, #007bff, #00c6ff);
-            color: white;
-            border: none;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.2s;
-        }
-        button:active { transform: scale(0.95); }
-        button:disabled { background: #444; cursor: not-allowed; }
-        .footer { font-size: 0.8rem; color: #666; margin-top: 20px; }
+        button { background: linear-gradient(135deg, #007bff, #00d2ff); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        button:disabled { background: #333; cursor: not-allowed; }
+        .footer { font-size: 0.7rem; color: #444; margin-top: 20px; }
     </style>
 </head>
 <body>
-
-    <div class="main-card">
-        <div class="brand">
-            <img src="logocampus.jpg" alt="CampusLA Logo" class="logo">
-            <h1>Auto-Publisher</h1>
-            <p>Cloud Edition</p>
+    <div class="card">
+        <img src="logocampus.jpg" alt="CampusLA" class="logo">
+        <h1>CampusLA</h1>
+        <p style="color: #888;">De Clase Mundial</p>
+        <div class="panel">
+            <div id="led" class="led"></div>
+            <p id="msg" style="font-size: 0.8rem; color: #aaa;">SISTEMA LISTO</p>
         </div>
-
-        <div class="display-panel">
-            <div id="status-light" class="led"></div>
-            <p id="status-msg">Sistema en espera</p>
-        </div>
-
-        <div class="control-room">
-            <button id="trigger-btn">EJECUTAR EN GIBUHUB</button>
-        </div>
-
-        <div class="footer">
-            <p>Admin: Marty | CampusLA 2026</p>
-        </div>
+        <button id="btn">EJECUTAR EN GIBUHUB</button>
+        <div class="footer">Admin: Marty | 2026</div>
     </div>
 
     <script>
-        /* JS COMPILADO - LÓGICA DE DISPARO */
-        document.getElementById('trigger-btn').addEventListener('click', function() {
-            const statusMsg = document.getElementById('status-msg');
-            const led = document.getElementById('status-light');
+        // CONFIGURACIÓN DE SENIOR
+        const TOKEN = "ghp_ajViegPn4qt30CLybGnA1wkQ1v1uIS2aZs79"; 
+        const OWNER = "Campusla";
+        const REPO = "Bot-CampusLA";
+
+        document.getElementById('btn').addEventListener('click', async function() {
             const btn = this;
+            const led = document.getElementById('led');
+            const msg = document.getElementById('msg');
 
             btn.disabled = true;
-            btn.innerText = "PROCESANDO...";
-            statusMsg.innerText = "Llamando a la Nube...";
             led.classList.add('led-active');
+            msg.innerText = "DESPERTANDO ROBOT...";
 
-            // Simulación de conexión real
-            setTimeout(() => {
-                statusMsg.innerText = "¡Orden enviada a GIBUHUB!";
-                alert("Automatización iniciada. El robot de CampusLA está despertando.");
-                
+            try {
+                const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/main.yml/dispatches`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Accept': 'application/vnd.github+json' },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+
+                if (res.ok) {
+                    msg.innerText = "¡ORDEN ENVIADA CON ÉXITO!";
+                    alert("¡Misión cumplida, gordo! El bot ya está camellando en la nube.");
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                msg.innerText = "ERROR DE CONEXIÓN";
+                led.style.background = "red";
+            } finally {
                 setTimeout(() => {
                     btn.disabled = false;
-                    btn.innerText = "EJECUTAR EN GIBUHUB";
-                    statusMsg.innerText = "Sistema en espera";
                     led.classList.remove('led-active');
-                }, 3000);
-            }, 2000);
+                    msg.innerText = "SISTEMA LISTO";
+                }, 5000);
+            }
         });
     </script>
 </body>
